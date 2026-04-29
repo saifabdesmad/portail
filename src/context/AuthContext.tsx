@@ -47,21 +47,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, [state.user]);
 
   const login = async (email: string, _password: string): Promise<boolean> => {
+    const normalizedEmail = email.trim();
+    if (!normalizedEmail || !_password.trim()) {
+      return false;
+    }
+
     // Simulated login - replace with real API call
     await new Promise(r => setTimeout(r, 800));
     const user: User = {
       id: '1',
-      name: email.split('@')[0].charAt(0).toUpperCase() + email.split('@')[0].slice(1),
-      email,
+      name: normalizedEmail.split('@')[0].charAt(0).toUpperCase() + normalizedEmail.split('@')[0].slice(1),
+      email: normalizedEmail,
     };
     setState(s => ({ ...s, user, isAuthenticated: true, isModalOpen: false }));
     return true;
   };
 
   const register = async (name: string, email: string, _password: string): Promise<boolean> => {
+    const normalizedName = name.trim();
+    const normalizedEmail = email.trim();
+    if (!normalizedName || !normalizedEmail || !_password.trim()) {
+      return false;
+    }
+
     // Simulated register - replace with real API call
     await new Promise(r => setTimeout(r, 1000));
-    const user: User = { id: Date.now().toString(), name, email };
+    const user: User = { id: Date.now().toString(), name: normalizedName, email: normalizedEmail };
     setState(s => ({ ...s, user, isAuthenticated: true, isModalOpen: false }));
     return true;
   };

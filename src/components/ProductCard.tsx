@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { ShoppingCart, Heart, Star, ArrowUpRight } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { formatPrice, formatDiscount } from '../utils/format';
@@ -30,9 +30,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, view = 'grid' }) => 
   };
 
   /* ── LIST VIEW ─────────────────────────────────── */
+  const navigate = useNavigate();
+
   if (view === 'list') {
     return (
-      <Link to={`/products/${product.id}`} className="group flex gap-5 p-4 bg-white rounded-2xl border border-ink-border hover:border-brand-yellow hover:shadow-card transition-all duration-200">
+      <div
+        role="link"
+        tabIndex={0}
+        onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/products/${product.id}`); }}
+        onClick={() => navigate(`/products/${product.id}`)}
+        className="group flex gap-5 p-4 bg-white rounded-2xl border border-ink-border hover:border-brand-yellow hover:shadow-card transition-all duration-200 cursor-pointer"
+      >
         <div className="relative w-28 h-28 rounded-2xl overflow-hidden bg-surface-100 flex-shrink-0">
           <img
             src={product.images[0]} alt={product.name}
@@ -64,15 +72,18 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, view = 'grid' }) => 
             </button>
           </div>
         </div>
-      </Link>
+      </div>
     );
   }
 
   /* ── GRID VIEW ─────────────────────────────────── */
   return (
-    <Link
-      to={`/products/${product.id}`}
-      className="group block bg-white rounded-3xl overflow-hidden border border-ink-border hover:border-transparent hover:shadow-card-hover transition-all duration-300 ease-spring"
+    <div
+      role="link"
+      tabIndex={0}
+      onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') navigate(`/products/${product.id}`); }}
+      onClick={() => navigate(`/products/${product.id}`)}
+      className="group block bg-white rounded-3xl overflow-hidden border border-ink-border hover:border-transparent hover:shadow-card-hover transition-all duration-300 ease-spring cursor-pointer"
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
     >
@@ -175,7 +186,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product, view = 'grid' }) => 
           </Link>
         </div>
       </div>
-    </Link>
+    </div>
   );
 };
 

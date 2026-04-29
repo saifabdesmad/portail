@@ -10,7 +10,14 @@ const announcements = [
   '✦ Personnalisation illimitée sur tous les produits ✦',
 ];
 
-const Navbar: React.FC = () => {
+
+
+type NavbarProps = {
+  minimal?: boolean;
+};
+
+
+const Navbar: React.FC<NavbarProps> = ( { minimal } ) => {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [userMenuOpen, setUserMenuOpen] = useState(false);
@@ -18,7 +25,7 @@ const Navbar: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [announcementIdx, setAnnouncementIdx] = useState(0);
   const { totalItems, toggleCart } = useCart();
-  const { isAuthenticated, user, openModal, logout } = useAuth();
+  const { isAuthenticated, user, logout } = useAuth();
   const location = useLocation();
 
   useEffect(() => {
@@ -48,6 +55,25 @@ const Navbar: React.FC = () => {
   const isActive = (path: string) =>
     path === '/' ? location.pathname === '/' : location.pathname.startsWith(path);
 
+
+
+  // in case minmal is true (used in auth pages) , we show only the logo without the nav links and actions
+  if (minimal) {
+    return (
+      <nav className="sticky top-0 z-50 bg-white border-b border-ink-border">
+        <div className="container-wide h-16 flex items-center">
+          <Link to="/" className="flex items-baseline gap-0.5">
+            <span className="font-display font-black text-xl text-ink">
+              WAY
+            </span>
+            <span className="text-brand-yellow font-display font-black text-xs pb-0.5">
+              3D
+            </span>
+          </Link>
+        </div>
+      </nav>
+    );
+  }
   return (
     <>
       {/* Announcement Bar */}
@@ -168,13 +194,15 @@ const Navbar: React.FC = () => {
                   )}
                 </div>
               ) : (
-                <button
-                  onClick={() => openModal('login')}
-                  className="ml-1 btn-md btn-primary text-sm hidden sm:inline-flex"
-                >
-                  <User size={15} />
-                  Connexion
-                </button>
+                <div className="hidden sm:flex items-center gap-2 ml-1">
+                  <Link to="/auth" className="btn-md btn-ghost text-sm inline-flex">
+                    <User size={15} />
+                    Connexion
+                  </Link>
+                  <Link to="/auth?tab=signup" className="btn-md btn-primary text-sm inline-flex">
+                    Inscription
+                  </Link>
+                </div>
               )}
 
               {/* Mobile Menu */}
@@ -241,8 +269,8 @@ const Navbar: React.FC = () => {
               ))}
               {!isAuthenticated && (
                 <div className="pt-3 border-t border-ink-border grid grid-cols-2 gap-2">
-                  <button onClick={() => openModal('login')} className="btn-md btn-ghost">Connexion</button>
-                  <button onClick={() => openModal('register')} className="btn-md btn-primary">Inscription</button>
+                  <Link to="/auth" className="btn-md btn-ghost text-center">Connexion</Link>
+                  <Link to="/auth?tab=signup" className="btn-md btn-primary text-center">Inscription</Link>
                 </div>
               )}
             </div>

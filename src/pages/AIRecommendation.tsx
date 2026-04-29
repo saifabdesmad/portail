@@ -1,16 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Sparkles, Send, Loader, RefreshCw, ShoppingCart, ChevronRight, Bot, User } from 'lucide-react';
-import { Link } from 'react-router-dom';
+import { Sparkles, Send, Loader, RefreshCw } from 'lucide-react';
 import { products } from '../data/products';
 import { formatPrice } from '../utils/format';
-import { useCart } from '../context/CartContext';
+import MessageComponent, { type ChatMessage } from '../components/MessageComponent';
 import type { Product } from '../data/products';
-
-interface Message {
-  role: 'user' | 'assistant';
-  content: string;
-  recommendations?: Product[];
-}
 
 const suggestedPrompts = [
   'Décoration pour mon salon',
@@ -55,17 +48,27 @@ const getAIResponse = (query: string): { text: string; recs: Product[] } => {
   return { text, recs: recs.slice(0, 4) };
 };
 
+
+
 const Home: React.FC = () => {
-  const [messages, setMessages] = useState<Message[]>([{
+  const [messages, setMessages] = useState<ChatMessage[]>([{
     role: 'assistant',
     content: `👋 **Bonjour ! Je suis l'assistant IA de WAY3D.**\n\nJe suis là pour vous aider à trouver le produit 3D parfait selon vos envies, votre budget ou l'occasion.\n\n**Essayez :**\n- "Un cadeau pour mon ami"\n- "Décoration pour mon salon"\n- "Budget inférieur à 30 TND"\n\nComment puis-je vous aider ?`,
   }]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const { addItem } = useCart();
   const endRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  useEffect(() => { endRef.current?.scrollIntoView({ behavior: 'smooth' }); }, [messages]);
+  useEffect(() => {
+    const container = messagesContainerRef.current;
+    if (!container) return;
+
+    container.scrollTo({
+      top: container.scrollHeight,
+      behavior: 'smooth',
+    });
+  }, [messages]);
 
   const send = async (text: string) => {
     if (!text.trim() || loading) return;
@@ -111,60 +114,9 @@ const Home: React.FC = () => {
         {/* Chat */}
         <div className="flex-1 bg-white rounded-3xl border border-ink-border shadow-card overflow-hidden flex flex-col" style={{ minHeight: '520px' }}>
           {/* Messages */}
-          <div className="flex-1 overflow-y-auto p-6 space-y-5">
+          <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-6 space-y-5">
             {messages.map((msg, i) => (
-              <div key={i} className={`flex gap-3 ${msg.role === 'user' ? 'flex-row-reverse' : ''}`}>
-                {/* Avatar */}
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${
-                  msg.role === 'assistant' ? 'bg-gradient-brand' : 'bg-ink'
-                }`}>
-                  {msg.role === 'assistant'
-                    ? <Bot size={17} className="text-ink" />
-                    : <User size={17} className="text-white" />}
-                </div>
-
-                <div className={`flex-1 max-w-[75%] space-y-3 ${msg.role === 'user' ? 'items-end flex flex-col' : ''}`}>
-                  <div className={`rounded-2xl px-4 py-3.5 text-sm ${
-                    msg.role === 'user'
-                      ? 'bg-ink text-white rounded-tr-sm'
-                      : 'bg-surface-50 text-ink-secondary border border-ink-border rounded-tl-sm'
-                  }`}>
-                    <div className="space-y-0.5">{renderText(msg.content)}</div>
-                  </div>
-
-                  {/* Recommendations */}
-                  {msg.recommendations && msg.recommendations.length > 0 && (
-                    <div className="grid grid-cols-2 gap-3 w-full">
-                      {msg.recommendations.map(p => (
-                        <div key={p.id} className="bg-white border border-ink-border rounded-2xl overflow-hidden hover:border-brand-yellow hover:shadow-card transition-all duration-200">
-                          <div className="aspect-video overflow-hidden bg-surface-100">
-                            <img src={p.images[0]} alt={p.name}
-                              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                              onError={e => { (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1558618666-fcd25c85cd64?w=400&q=60'; }} />
-                          </div>
-                          <div className="p-3">
-                            <p className="font-semibold text-ink text-xs truncate mb-0.5">{p.name}</p>
-                            <p className="text-brand-teal font-bold text-xs">{formatPrice(p.price)}</p>
-                            <div className="flex gap-1.5 mt-2.5">
-                              <Link to={`/products/${p.id}`} className="flex-1 text-center py-1.5 text-xs font-medium bg-surface-50 border border-ink-border hover:bg-surface-100 rounded-lg transition-colors flex items-center justify-center gap-0.5">
-                                Voir <ChevronRight size={10} />
-                              </Link>
-                              <button
-                                onClick={() => addItem(p)}
-                                disabled={!p.inStock}
-                                className="flex-1 flex items-center justify-center gap-1 py-1.5 text-xs font-semibold bg-brand-yellow hover:bg-brand-yellow-dark text-ink rounded-lg transition-colors disabled:bg-surface-100 disabled:text-ink-faint"
-                              >
-                                <ShoppingCart size={11} />
-                                {p.inStock ? 'Ajouter' : 'Épuisé'}
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </div>
-              </div>
+              <MessageComponent key={i} message={msg} />
             ))}
 
             {loading && (
