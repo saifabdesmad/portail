@@ -457,6 +457,45 @@ const Home: React.FC = () => {
         </div>
       </section>
 
+      {/* ──────────────── DATA PORTAL TEASER ───────────────── */}
+      <section className="bg-ink py-16">
+        <div className="container-wide">
+          <div className="flex flex-col lg:flex-row items-center gap-10">
+            <div className="flex-1 text-white">
+              <div className="inline-flex items-center gap-2 px-3 py-1.5 bg-white/10 rounded-full text-xs font-semibold mb-4">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><ellipse cx="12" cy="5" rx="9" ry="3"/><path d="M3 5v14a9 3 0 0018 0V5"/><path d="M3 12a9 3 0 0018 0"/></svg>
+                Portail de Données Ouvertes
+              </div>
+              <h2 className="font-display font-black text-3xl md:text-4xl mb-4">
+                Nos données,<br/><span className="text-brand-yellow">en toute transparence</span>
+              </h2>
+              <p className="text-white/60 text-sm leading-relaxed max-w-md mb-6">
+                Explorez le catalogue WAY3D sous forme de données structurées : statistiques, graphiques,
+                filtres, exports CSV & JSON et référence API — tout est accessible librement.
+              </p>
+              <Link to="/data" className="inline-flex items-center gap-2 px-6 py-3 bg-brand-yellow text-ink font-bold rounded-full hover:bg-yellow-400 transition-colors text-sm">
+                Explorer le portail
+                <ArrowRight size={15} />
+              </Link>
+            </div>
+            <div className="grid grid-cols-2 gap-4 w-full lg:max-w-sm">
+              {[
+                { label: 'Produits', value: '16',    sub: 'dans le catalogue'     },
+                { label: 'Catégories', value: '7',   sub: 'familles de produits'  },
+                { label: 'Avis clients', value: '2 330+', sub: 'évaluations cumulées' },
+                { label: 'Note moyenne', value: '4.74★', sub: 'sur l\'ensemble du catalogue' },
+              ].map(s => (
+                <div key={s.label} className="bg-white/10 rounded-2xl p-4">
+                  <p className="font-black text-2xl text-white">{s.value}</p>
+                  <p className="text-brand-yellow text-xs font-semibold mt-0.5">{s.label}</p>
+                  <p className="text-white/40 text-xs mt-0.5">{s.sub}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </section>
+
       {/* ──────────────── TRUST BAR ───────────────── */}
       <section className="bg-white border-t border-ink-border">
         <div className="container-wide py-12">

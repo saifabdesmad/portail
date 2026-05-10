@@ -58,17 +58,21 @@ export const getAIResponseMock = (query: string): { text: string; recs: Product[
 
 export const getAIResponseMistral = async (query: string): Promise<{ text: string; recs: Product[] }> => {
 
-  const { text, wantsRec } = await callMistral(query);
+  // If Ollama (Mistral) isn't reachable, gracefully fall back to the local mock
+  // so the chat never hangs during demos.
+  try {
+    const { text, wantsRec } = await callMistral(query);
 
-  console.log("Mistral response:", text, "Wants recs:", wantsRec);
-
-  let recs: Product[] = [];
-
-  if (wantsRec) {
-    recs = products
-      .filter(p => p.isBestSeller || p.isNew)
-      .slice(0, 4);
+    let recs: Product[] = [];
+    if (wantsRec) {
+      recs = products
+        .filter(p => p.isBestSeller || p.isNew)
+        .slice(0, 4);
+    }
+    return { text, recs };
+  } catch (err) {
+    console.warn("Mistral unavailable, using local mock:", err);
+    return getAIResponseMock(query);
   }
-  return { text, recs };
 }
 

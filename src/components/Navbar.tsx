@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
-import { ShoppingCart, User, Menu, X, Search, Heart, LogOut, Package, Settings, ChevronDown, Sparkles } from 'lucide-react';
+import { ShoppingCart, User, Menu, X, Search, Heart, LogOut, Package, Settings, ChevronDown, Sparkles, Database } from 'lucide-react';
 import { useCart } from '../context/CartContext';
 import { useAuth } from '../context/AuthContext';
 
@@ -48,6 +48,7 @@ const Navbar: React.FC<NavbarProps> = ( { minimal } ) => {
     { to: '/', label: 'Accueil' },
     { to: '/products', label: 'Produits' },
     { to: '/ai-recommendation', label: 'IA', icon: <Sparkles size={13} /> },
+    { to: '/data', label: 'Données', icon: <Database size={13} /> },
     { to: '/about', label: 'À propos' },
     { to: '/contact', label: 'Contact' },
   ];

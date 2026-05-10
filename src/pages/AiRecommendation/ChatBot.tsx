@@ -44,18 +44,21 @@ const ChatBot: React.FC = () => {
     setInput('');
     setLoading(true);
 
-    const { text: resp, recs } = await getAIResponseMistral(text);
-
-    setMessages(m => [
-      ...m,
-      {
-        role: 'assistant',
-        content: resp,
-        recommendations: recs
-      }
-    ]);
-
-    setLoading(false);
+    try {
+      const { text: resp, recs } = await getAIResponseMistral(text);
+      setMessages(m => [
+        ...m,
+        { role: 'assistant', content: resp, recommendations: recs }
+      ]);
+    } catch (err) {
+      console.error(err);
+      setMessages(m => [
+        ...m,
+        { role: 'assistant', content: "Désolé, une erreur est survenue. Réessayez dans un instant." }
+      ]);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const reset = () => setMessages([{

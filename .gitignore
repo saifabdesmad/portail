@@ -31,3 +31,19 @@ yarn-debug.log*
 yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
+
+# SQLite runtime (local DB)
+backend/*.db
+backend/*.db-shm
+backend/*.db-wal
+
+# Local tooling / teammate slices (full app lives in src/ + backend/)
+_portail-push/
+mouaffak-chouaibi-storefront/
+nassim-mansour-backend-admin/
+saif-abdesmad-auth-ai/
+*.zip
+
+# Local git amend helpers
+empty-hooks/
+.git-commit-msg-portail.txt

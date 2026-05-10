@@ -2,8 +2,13 @@ export const callMistral = async (
   message: string
 ): Promise<{ text: string; wantsRec: boolean }> => {
 
+  // Abort if Ollama is not reachable within 3s so the UI never hangs.
+  const controller = new AbortController();
+  const timeoutId  = setTimeout(() => controller.abort(), 3000);
+
   const res = await fetch("http://localhost:11434/api/chat", {
     method: "POST",
+    signal: controller.signal,
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
       model: "mistral",
@@ -31,6 +36,7 @@ Rules:
     }),
   });
 
+  clearTimeout(timeoutId);
   const data = await res.json();
 
   let parsed;
